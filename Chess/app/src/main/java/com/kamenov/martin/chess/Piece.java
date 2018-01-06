@@ -1,10 +1,14 @@
 package com.kamenov.martin.chess;
 
+import android.graphics.Canvas;
+
 /**
  * Created by Martin on 29.12.2017 г..
  */
 
-public interface Piece extends GameObject {
+public interface Piece {
+    void draw(Canvas canvas, int playerTurn);
+
     Color getColor();
 
     void setColor(Color color);

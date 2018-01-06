@@ -84,21 +84,43 @@ public class Board implements GameObject {
         if (selectedPiece != null) {
             placesToMove = selectedPiece.canMove(matrix);
         }
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                if ((i + j) % 2 == 1) {
-                    canvas.drawRect(j * cellWidth, i * cellWidth, (j * cellWidth) + cellWidth,
-                            (i * cellWidth) + cellWidth, blackPaint);
-                } else {
-                    canvas.drawRect(j * cellWidth, i * cellWidth, (j * cellWidth) + cellWidth,
-                            (i * cellWidth) + cellWidth, whitePaint);
-                }
-                if (placesToMove != null && placesToMove[i][j]) {
-                    if (matrix[i][j] == null) {
-                        canvas.drawCircle(j * cellWidth + cellWidth / 2, i * cellWidth + cellWidth / 2, cellWidth / 5, bluePaint);
+        if(playerTurn%2==1) {
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    if ((i + j) % 2 == 1) {
+                        canvas.drawRect(j * cellWidth, i * cellWidth, (j * cellWidth) + cellWidth,
+                                (i * cellWidth) + cellWidth, blackPaint);
                     } else {
                         canvas.drawRect(j * cellWidth, i * cellWidth, (j * cellWidth) + cellWidth,
-                                (i * cellWidth) + cellWidth, redPaint);
+                                (i * cellWidth) + cellWidth, whitePaint);
+                    }
+                    if (placesToMove != null && placesToMove[i][j]) {
+                        if (matrix[i][j] == null) {
+                            canvas.drawCircle(j * cellWidth + cellWidth / 2, i * cellWidth + cellWidth / 2, cellWidth / 5, bluePaint);
+                        } else {
+                            canvas.drawRect(j * cellWidth, i * cellWidth, (j * cellWidth) + cellWidth,
+                                    (i * cellWidth) + cellWidth, redPaint);
+                        }
+                    }
+                }
+            }
+        } else {
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    if ((i + j) % 2 == 1) {
+                        canvas.drawRect((7 - j) * cellWidth, (7 - i) * cellWidth, ((7 - j) * cellWidth) + cellWidth,
+                                ((7 - i) * cellWidth) + cellWidth, blackPaint);
+                    } else {
+                        canvas.drawRect((7 - j) * cellWidth, (7 - i) * cellWidth, ((7 - j) * cellWidth) + cellWidth,
+                                ((7 - i) * cellWidth) + cellWidth, whitePaint);
+                    }
+                    if (placesToMove != null && placesToMove[i][j]) {
+                        if (matrix[i][j] == null) {
+                            canvas.drawCircle((7 - j) * cellWidth + cellWidth / 2, (7 - i) * cellWidth + cellWidth / 2, cellWidth / 5, bluePaint);
+                        } else {
+                            canvas.drawRect((7 - j) * cellWidth, (7 - i) * cellWidth, ((7 - j) * cellWidth) + cellWidth,
+                                    ((7 - i) * cellWidth) + cellWidth, redPaint);
+                        }
                     }
                 }
             }
@@ -108,7 +130,7 @@ public class Board implements GameObject {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if (matrix[i][j] != null) {
-                    matrix[i][j].draw(canvas);
+                    matrix[i][j].draw(canvas, playerTurn);
                 }
             }
         }
@@ -120,6 +142,10 @@ public class Board implements GameObject {
     }
 
     public void selectPlace(int row, int col) {
+        if(playerTurn%2==0) {
+            row = 7 - row;
+            col = 7 - col;
+        }
         if (row >= Constants.ROWS || col >= Constants.COLS ||
                 row < 0 || col < 0) {
             return;

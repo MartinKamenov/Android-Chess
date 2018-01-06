@@ -85,7 +85,7 @@ public class Knight implements Piece {
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(Canvas canvas, int playerTurn) {
         Bitmap icon = null;
         if(getColor()==Color.White) {
             icon = BitmapFactory.decodeResource(context.getResources(),
@@ -94,9 +94,17 @@ public class Knight implements Piece {
             icon = BitmapFactory.decodeResource(context.getResources(),
                     R.drawable.blackknight);
         }
-        Rect rect = new Rect(col * Constants.CELL_WIDTH, row * Constants.CELL_WIDTH
+        Rect whiteRect = new Rect(col * Constants.CELL_WIDTH, row * Constants.CELL_WIDTH
                 , col * Constants.CELL_WIDTH + Constants.CELL_WIDTH, row * Constants.CELL_WIDTH + Constants.CELL_WIDTH);
-        canvas.drawBitmap(icon, null, rect, null);
+
+        Rect blackRect = new Rect((7 - col) * Constants.CELL_WIDTH, (7 - row) * Constants.CELL_WIDTH
+                , (7 - col) * Constants.CELL_WIDTH + Constants.CELL_WIDTH, (7 - row) * Constants.CELL_WIDTH + Constants.CELL_WIDTH);
+
+        if(playerTurn%2==1) {
+            canvas.drawBitmap(icon, null, whiteRect, null);
+        } else {
+            canvas.drawBitmap(icon, null, blackRect, null);
+        }
     }
 
     public void setRow(int row) {
