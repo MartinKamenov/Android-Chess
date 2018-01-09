@@ -20,11 +20,13 @@ public class King implements Piece {
     private int row;
     private int col;
     private Context context;
+    private boolean hasMoved;
 
     public King(Color color, int row, int col, Context context) {
         setColor(color);
         setRow(row);
         setCol(col);
+        hasMoved = false;
         this.context = context;
     }
     @Override

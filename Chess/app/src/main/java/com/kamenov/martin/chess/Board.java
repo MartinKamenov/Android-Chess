@@ -1,8 +1,10 @@
 package com.kamenov.martin.chess;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.*;
 import android.graphics.Color;
+import android.widget.Toast;
 
 import com.kamenov.martin.chess.pieces.Bishop;
 import com.kamenov.martin.chess.pieces.King;
@@ -23,8 +25,14 @@ public class Board implements GameObject {
     private boolean pieceIsSelected;
     private Piece selectedPiece;
     private GamePanel gamePanel;
+    private Piece whiteKing;
+    private Piece blackKing;
+    private boolean whiteIsInCheck;
+    private boolean blackIsInCheck;
+    private Context context;
 
     public Board(Context context, GamePanel gamePanel) {
+        this.context = context;
         this.gamePanel = gamePanel;
         matrix = new Piece[8][8];
         playerTurn = 1;
@@ -49,8 +57,10 @@ public class Board implements GameObject {
         matrix[7][3] = new Queen(com.kamenov.martin.chess.Color.White, 7, 3, context);
         matrix[0][3] = new Queen(com.kamenov.martin.chess.Color.Black, 0, 3, context);
 
-        matrix[7][4] = new King(com.kamenov.martin.chess.Color.White, 7, 4, context);
-        matrix[0][4] = new King(com.kamenov.martin.chess.Color.Black, 0, 4, context);
+        whiteKing = new King(com.kamenov.martin.chess.Color.White, 7, 4, context);
+        blackKing = new King(com.kamenov.martin.chess.Color.Black, 0, 4, context);
+        matrix[7][4] = whiteKing;
+        matrix[0][4] = blackKing;
 
         for (int i = 0; i < Constants.COLS; i++) {
             matrix[6][i] = new Pawn(com.kamenov.martin.chess.Color.White, 6, i, context);
@@ -73,6 +83,9 @@ public class Board implements GameObject {
         Paint redPaint = new Paint();
         redPaint.setColor(Color.parseColor("#ff1414"));
         redPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        Paint turquoisePaint = new Paint();
+        turquoisePaint.setColor(Color.parseColor("#ffe019"));
+        turquoisePaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
         // Draws board
         Paint outsidePaint = new Paint();
@@ -126,6 +139,18 @@ public class Board implements GameObject {
             }
         }
 
+        if(selectedPiece!=null) {
+            int selectedRow = selectedPiece.getRow();
+            int selectedCol = selectedPiece.getCol();
+            if(playerTurn%2 == 1) {
+                canvas.drawRect(selectedCol * cellWidth, selectedRow * cellWidth, (selectedCol * cellWidth) + cellWidth,
+                        (selectedRow * cellWidth) + cellWidth, turquoisePaint);
+            } else {
+                canvas.drawRect((7 - selectedCol) * cellWidth, (7 - selectedRow) * cellWidth, ((7 - selectedCol) * cellWidth) + cellWidth,
+                        ((7 - selectedRow) * cellWidth) + cellWidth, turquoisePaint);
+            }
+        }
+
         // Draws pieces
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -162,34 +187,103 @@ public class Board implements GameObject {
                 selectedPiece = null;
                 pieceIsSelected = false;
             }
-        } else if(pieceIsSelected && matrix[row][col] == null) {
-            if(selectedPiece.canMove(getMatrix())[row][col]) {
+        } else if(pieceIsSelected) {
+            if(matrix[row][col]!=null&&matrix[row][col].getColor()==selectedPiece.getColor()) {
+                selectedPiece = matrix[row][col];
+            }
+            else if(selectedPiece.canMove(getMatrix())[row][col]) {
+                int currentRow = selectedPiece.getRow();
+                int currentCol = selectedPiece.getCol();
+                Piece pieceInPlace = matrix[row][col];
                 matrix[row][col] = selectedPiece;
                 matrix[selectedPiece.getRow()][selectedPiece.getCol()] = null;
+
                 selectedPiece.move(row, col);
-                selectedPiece = null;
-                pieceIsSelected = false;
-                playerTurn++;
-            }
-        } else if(pieceIsSelected && matrix[row][col] != null) {
-            if(selectedPiece.canMove(getMatrix())[row][col]) {
-                matrix[row][col] = selectedPiece;
-                matrix[selectedPiece.getRow()][selectedPiece.getCol()] = null;
-                selectedPiece.move(row, col);
-                selectedPiece = null;
-                pieceIsSelected = false;
-                playerTurn++;
-            }
-            else {
-                if(selectedPiece.getColor()==matrix[row][col].getColor()) {
-                    selectedPiece = matrix[row][col];
+                boolean hasMoved = true;
+                if(playerTurn%2==1) {
+                    if(checkForBlackChess()) {
+                        selectedPiece.move(currentRow, currentCol);
+                        if(pieceInPlace!=null) {
+                            matrix[row][col] = pieceInPlace;
+                        }
+                        matrix[currentRow][currentCol] = selectedPiece;
+                        hasMoved = false;
+                    }
+                } else {
+                    if(checkForWhiteChess()) {
+                        selectedPiece.move(currentRow, currentCol);
+                        if(pieceInPlace!=null) {
+                            matrix[row][col] = pieceInPlace;
+                        }
+                        matrix[currentRow][currentCol] = selectedPiece;
+                        hasMoved = false;
+                    }
                 }
+
+                if(playerTurn%2==1) {
+                    if(checkForWhiteChess()) {
+                        blackIsInCheck = true;
+                        Toast.makeText(context, "Black is in chess", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    if(checkForBlackChess()) {
+                        whiteIsInCheck = true;
+                        Toast.makeText(context, "White is in chess", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                if(hasMoved) {
+                    whiteIsInCheck = false;
+                    blackIsInCheck = false;
+                    selectedPiece = null;
+                    pieceIsSelected = false;
+                    playerTurn++;
+                }
+
             }
         }
+
         this.gamePanel.draw();
     }
 
     public void getMatrix(Piece[][] matrix) {
         this.matrix = matrix;
     }
+
+    private boolean checkForWhiteChess() {
+        for (int i = 0; i <  7; i++) {
+            for (int j = 0; j < 7; j++) {
+                if(matrix[i][j] != null) {
+                    Piece piece = matrix[i][j];
+                    if(piece.getColor() == com.kamenov.martin.chess.Color.White) {
+                        boolean[][] placesPieceCanMove = piece.canMove(matrix);
+                        if(placesPieceCanMove[blackKing.getRow()][blackKing.getCol()]) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private boolean checkForBlackChess() {
+        for (int i = 0; i <  7; i++) {
+            for (int j = 0; j < 7; j++) {
+                if(matrix[i][j] != null) {
+                    Piece piece = matrix[i][j];
+                    if(piece.getColor() == com.kamenov.martin.chess.Color.Black) {
+                        boolean[][] placesPieceCanMove = piece.canMove(matrix);
+                        if(placesPieceCanMove[whiteKing.getRow()][whiteKing.getCol()]) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+
 }
