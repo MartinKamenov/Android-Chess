@@ -1,4 +1,4 @@
-package com.kamenov.martin.chess.pieces;
+package com.kamenov.martin.chess.game.pieces;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -6,37 +6,33 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 
-import com.kamenov.martin.chess.Color;
-import com.kamenov.martin.chess.Constants;
-import com.kamenov.martin.chess.Piece;
+import com.kamenov.martin.chess.game.PlayerColor;
+import com.kamenov.martin.chess.game.Constants;
 import com.kamenov.martin.chess.R;
 
 /**
  * Created by Martin on 3.1.2018 г..
  */
 
-public class King implements Piece {
-    private Color color;
+public class King extends DrawablePiece {
+    private PlayerColor playerColor;
     private int row;
     private int col;
-    private Context context;
     private boolean hasMoved;
 
-    public King(Color color, int row, int col, Context context) {
-        setColor(color);
+    public King(PlayerColor playerColor, int row, int col, Context context) {
+        super(context);
+        setPlayerColor(playerColor);
         setRow(row);
         setCol(col);
         hasMoved = false;
-        this.context = context;
     }
-    @Override
-    public Color getColor() {
-        return color;
+    public PlayerColor getPlayerColor() {
+        return playerColor;
     }
 
-    @Override
-    public void setColor(Color color) {
-        this.color = color;
+    public void setPlayerColor(PlayerColor playerColor) {
+        this.playerColor = playerColor;
     }
 
     @Override
@@ -58,7 +54,7 @@ public class King implements Piece {
 
     private void fillResult(boolean[][] result, Piece[][] board, int row, int col) {
         if(isInMatrix(row, col)) {
-            if(board[row][col]==null||board[row][col].getColor()!=color) {
+            if(board[row][col]==null||board[row][col].getPlayerColor()!= playerColor) {
                 result[row][col] = true;
             }
         }
@@ -85,29 +81,6 @@ public class King implements Piece {
     @Override
     public int getCol() {
         return col;
-    }
-
-    @Override
-    public void draw(Canvas canvas, int playerTurn) {
-        Bitmap icon = null;
-        if(getColor()==Color.White) {
-            icon = BitmapFactory.decodeResource(context.getResources(),
-                    R.drawable.whiteking);
-        } else {
-            icon = BitmapFactory.decodeResource(context.getResources(),
-                    R.drawable.blackking);
-        }
-        Rect whiteRect = new Rect(col * Constants.CELL_WIDTH, row * Constants.CELL_WIDTH
-                , col * Constants.CELL_WIDTH + Constants.CELL_WIDTH, row * Constants.CELL_WIDTH + Constants.CELL_WIDTH);
-
-        Rect blackRect = new Rect((7 - col) * Constants.CELL_WIDTH, (7 - row) * Constants.CELL_WIDTH
-                , (7 - col) * Constants.CELL_WIDTH + Constants.CELL_WIDTH, (7 - row) * Constants.CELL_WIDTH + Constants.CELL_WIDTH);
-
-        if(playerTurn%2==1) {
-            canvas.drawBitmap(icon, null, whiteRect, null);
-        } else {
-            canvas.drawBitmap(icon, null, blackRect, null);
-        }
     }
 
     public void setRow(int row) {

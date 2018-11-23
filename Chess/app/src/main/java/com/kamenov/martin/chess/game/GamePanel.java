@@ -1,4 +1,4 @@
-package com.kamenov.martin.chess;
+package com.kamenov.martin.chess.game;
 
 import android.content.Context;
 import android.graphics.Canvas;

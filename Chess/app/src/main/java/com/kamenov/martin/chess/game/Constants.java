@@ -1,4 +1,4 @@
-package com.kamenov.martin.chess;
+package com.kamenov.martin.chess.game;
 
 /**
  * Created by Martin on 2.1.2018 г..

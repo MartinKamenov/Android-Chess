@@ -1,4 +1,4 @@
-package com.kamenov.martin.chess.pieces;
+package com.kamenov.martin.chess.game.pieces;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -6,37 +6,33 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 
-import com.kamenov.martin.chess.Color;
-import com.kamenov.martin.chess.Constants;
-import com.kamenov.martin.chess.Piece;
+import com.kamenov.martin.chess.game.PlayerColor;
+import com.kamenov.martin.chess.game.Constants;
 import com.kamenov.martin.chess.R;
 
 /**
  * Created by Martin on 3.1.2018 г..
  */
 
-public class Pawn implements Piece {
-    private Color color;
+public class Pawn extends DrawablePiece {
+    private PlayerColor playerColor;
     private int row;
     private int col;
-    private Context context;
     private boolean hasMoved;
 
-    public Pawn(Color color, int row, int col, Context context) {
-        setColor(color);
+    public Pawn(PlayerColor playerColor, int row, int col, Context context) {
+        super(context);
+        setPlayerColor(playerColor);
         setRow(row);
         setCol(col);
         hasMoved = false;
-        this.context = context;
     }
-    @Override
-    public Color getColor() {
-        return color;
+    public PlayerColor getPlayerColor() {
+        return playerColor;
     }
 
-    @Override
-    public void setColor(Color color) {
-        this.color = color;
+    public void setPlayerColor(PlayerColor playerColor) {
+        this.playerColor = playerColor;
     }
 
     @Override
@@ -45,7 +41,7 @@ public class Pawn implements Piece {
         // up left diagonal
         int checkingCol = col;
         int checkingRow = row;
-        if(color == Color.Black) {
+        if(playerColor == PlayerColor.Black) {
             if(++checkingRow<Constants.ROWS) {
                 if (board[checkingRow][checkingCol] == null) {
                     result[checkingRow][checkingCol] = true;
@@ -55,17 +51,17 @@ public class Pawn implements Piece {
                 }
                 checkingRow = row + 1;
                 if (checkingCol+1<Constants.COLS && board[checkingRow][checkingCol+1] != null
-                        && board[checkingRow][checkingCol+1].getColor()!=color) {
+                        && board[checkingRow][checkingCol+1].getPlayerColor()!= playerColor) {
                     result[checkingRow][checkingCol + 1] = true;
                 }
                 if (checkingCol-1>=0 && board[checkingRow][checkingCol-1] != null
-                        && board[checkingRow][checkingCol-1].getColor()!=color) {
+                        && board[checkingRow][checkingCol-1].getPlayerColor()!= playerColor) {
                     result[checkingRow][checkingCol - 1] = true;
                 }
             }
         }
 
-        if(color == Color.White) {
+        if(playerColor == PlayerColor.White) {
             if(--checkingRow>=0) {
                 if (board[checkingRow][checkingCol] == null) {
                     result[checkingRow][checkingCol] = true;
@@ -75,11 +71,11 @@ public class Pawn implements Piece {
                 }
                 checkingRow = row - 1;
                 if (checkingCol+1<Constants.COLS && board[checkingRow][checkingCol+1] != null
-                        && board[checkingRow][checkingCol+1].getColor()!=color) {
+                        && board[checkingRow][checkingCol+1].getPlayerColor()!= playerColor) {
                     result[checkingRow][checkingCol + 1] = true;
                 }
                 if (checkingCol-1>=0 && board[checkingRow][checkingCol-1] != null
-                        && board[checkingRow][checkingCol-1].getColor()!=color) {
+                        && board[checkingRow][checkingCol-1].getPlayerColor()!= playerColor) {
                     result[checkingRow][checkingCol - 1] = true;
                 }
             }
@@ -103,29 +99,6 @@ public class Pawn implements Piece {
     @Override
     public int getCol() {
         return col;
-    }
-
-    @Override
-    public void draw(Canvas canvas, int playerTurn) {
-        Bitmap icon = null;
-        if(getColor()==Color.White) {
-            icon = BitmapFactory.decodeResource(context.getResources(),
-                    R.drawable.whitepawn);
-        } else {
-            icon = BitmapFactory.decodeResource(context.getResources(),
-                    R.drawable.blackpawn);
-        }
-        Rect whiteRect = new Rect(col * Constants.CELL_WIDTH, row * Constants.CELL_WIDTH
-                , col * Constants.CELL_WIDTH + Constants.CELL_WIDTH, row * Constants.CELL_WIDTH + Constants.CELL_WIDTH);
-
-        Rect blackRect = new Rect((7 - col) * Constants.CELL_WIDTH, (7 - row) * Constants.CELL_WIDTH
-                , (7 - col) * Constants.CELL_WIDTH + Constants.CELL_WIDTH, (7 - row) * Constants.CELL_WIDTH + Constants.CELL_WIDTH);
-
-        if(playerTurn%2==1) {
-            canvas.drawBitmap(icon, null, whiteRect, null);
-        } else {
-            canvas.drawBitmap(icon, null, blackRect, null);
-        }
     }
 
     public void setRow(int row) {
