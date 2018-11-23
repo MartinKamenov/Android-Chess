@@ -1,14 +1,9 @@
 package com.kamenov.martin.chess.game.pieces;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Rect;
 
 import com.kamenov.martin.chess.game.PlayerColor;
-import com.kamenov.martin.chess.game.Constants;
-import com.kamenov.martin.chess.R;
+import com.kamenov.martin.chess.contracts.Constants;
 
 /**
  * Created by Martin on 29.12.2017 г..

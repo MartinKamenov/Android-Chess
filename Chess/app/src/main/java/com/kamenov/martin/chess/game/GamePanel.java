@@ -6,6 +6,8 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.kamenov.martin.chess.contracts.Constants;
+
 /**
  * Created by Martin on 29.12.2017 г..
  */

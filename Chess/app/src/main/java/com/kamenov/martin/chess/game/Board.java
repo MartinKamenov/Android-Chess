@@ -5,6 +5,7 @@ import android.graphics.*;
 import android.graphics.Color;
 import android.widget.Toast;
 
+import com.kamenov.martin.chess.contracts.Constants;
 import com.kamenov.martin.chess.game.pieces.Bishop;
 import com.kamenov.martin.chess.game.pieces.King;
 import com.kamenov.martin.chess.game.pieces.Knight;

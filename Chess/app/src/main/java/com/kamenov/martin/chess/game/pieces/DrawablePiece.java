@@ -7,7 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 
 import com.kamenov.martin.chess.R;
-import com.kamenov.martin.chess.game.Constants;
+import com.kamenov.martin.chess.contracts.Constants;
 import com.kamenov.martin.chess.game.PlayerColor;
 
 /**
