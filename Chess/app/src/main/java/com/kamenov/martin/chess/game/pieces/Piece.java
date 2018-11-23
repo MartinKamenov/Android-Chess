@@ -1,17 +1,17 @@
-package com.kamenov.martin.chess;
+package com.kamenov.martin.chess.game.pieces;
 
 import android.graphics.Canvas;
+
+import com.kamenov.martin.chess.game.PlayerColor;
 
 /**
  * Created by Martin on 29.12.2017 г..
  */
 
 public interface Piece {
-    void draw(Canvas canvas, int playerTurn);
+    void draw(Canvas canvas, PlayerColor playerTurn);
 
-    Color getColor();
-
-    void setColor(Color color);
+    PlayerColor getPlayerColor();
 
     boolean[][] canMove(Piece[][] board);
 

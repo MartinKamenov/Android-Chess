@@ -1,19 +1,17 @@
-package com.kamenov.martin.chess;
+package com.kamenov.martin.chess.game;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.*;
 import android.graphics.Color;
 import android.widget.Toast;
 
-import com.kamenov.martin.chess.pieces.Bishop;
-import com.kamenov.martin.chess.pieces.King;
-import com.kamenov.martin.chess.pieces.Knight;
-import com.kamenov.martin.chess.pieces.Pawn;
-import com.kamenov.martin.chess.pieces.Queen;
-import com.kamenov.martin.chess.pieces.Rook;
-
-import java.util.ArrayList;
+import com.kamenov.martin.chess.game.pieces.Bishop;
+import com.kamenov.martin.chess.game.pieces.King;
+import com.kamenov.martin.chess.game.pieces.Knight;
+import com.kamenov.martin.chess.game.pieces.Pawn;
+import com.kamenov.martin.chess.game.pieces.Piece;
+import com.kamenov.martin.chess.game.pieces.Queen;
+import com.kamenov.martin.chess.game.pieces.Rook;
 
 /**
  * Created by Martin on 29.12.2017 г..
@@ -21,7 +19,7 @@ import java.util.ArrayList;
 
 public class Board implements GameObject {
     private Piece[][] matrix;
-    private int playerTurn;
+    private PlayerColor playerTurn;
     private boolean pieceIsSelected;
     private Piece selectedPiece;
     private GamePanel gamePanel;
@@ -35,36 +33,36 @@ public class Board implements GameObject {
         this.context = context;
         this.gamePanel = gamePanel;
         matrix = new Piece[8][8];
-        playerTurn = 1;
+        playerTurn = PlayerColor.White;
         pieceIsSelected = false;
         selectedPiece = null;
 
-        matrix[7][0] = new Rook(com.kamenov.martin.chess.Color.White, 7, 0, context);
-        matrix[7][7] = new Rook(com.kamenov.martin.chess.Color.White, 7, 7, context);
-        matrix[0][0] = new Rook(com.kamenov.martin.chess.Color.Black, 0, 0, context);
-        matrix[0][7] = new Rook(com.kamenov.martin.chess.Color.Black, 0, 7, context);
+        matrix[7][0] = new Rook(PlayerColor.White, 7, 0, context);
+        matrix[7][7] = new Rook(PlayerColor.White, 7, 7, context);
+        matrix[0][0] = new Rook(PlayerColor.Black, 0, 0, context);
+        matrix[0][7] = new Rook(PlayerColor.Black, 0, 7, context);
 
-        matrix[7][1] = new Knight(com.kamenov.martin.chess.Color.White, 7, 1, context);
-        matrix[7][6] = new Knight(com.kamenov.martin.chess.Color.White, 7, 6, context);
-        matrix[0][1] = new Knight(com.kamenov.martin.chess.Color.Black, 0, 1, context);
-        matrix[0][6] = new Knight(com.kamenov.martin.chess.Color.Black, 0, 6, context);
+        matrix[7][1] = new Knight(PlayerColor.White, 7, 1, context);
+        matrix[7][6] = new Knight(PlayerColor.White, 7, 6, context);
+        matrix[0][1] = new Knight(PlayerColor.Black, 0, 1, context);
+        matrix[0][6] = new Knight(PlayerColor.Black, 0, 6, context);
 
-        matrix[7][2] = new Bishop(com.kamenov.martin.chess.Color.White, 7, 2, context);
-        matrix[7][5] = new Bishop(com.kamenov.martin.chess.Color.White, 7, 5, context);
-        matrix[0][2] = new Bishop(com.kamenov.martin.chess.Color.Black, 0, 2, context);
-        matrix[0][5] = new Bishop(com.kamenov.martin.chess.Color.Black, 0, 5, context);
+        matrix[7][2] = new Bishop(PlayerColor.White, 7, 2, context);
+        matrix[7][5] = new Bishop(PlayerColor.White, 7, 5, context);
+        matrix[0][2] = new Bishop(PlayerColor.Black, 0, 2, context);
+        matrix[0][5] = new Bishop(PlayerColor.Black, 0, 5, context);
 
-        matrix[7][3] = new Queen(com.kamenov.martin.chess.Color.White, 7, 3, context);
-        matrix[0][3] = new Queen(com.kamenov.martin.chess.Color.Black, 0, 3, context);
+        matrix[7][3] = new Queen(PlayerColor.White, 7, 3, context);
+        matrix[0][3] = new Queen(PlayerColor.Black, 0, 3, context);
 
-        whiteKing = new King(com.kamenov.martin.chess.Color.White, 7, 4, context);
-        blackKing = new King(com.kamenov.martin.chess.Color.Black, 0, 4, context);
+        whiteKing = new King(PlayerColor.White, 7, 4, context);
+        blackKing = new King(PlayerColor.Black, 0, 4, context);
         matrix[7][4] = whiteKing;
         matrix[0][4] = blackKing;
 
         for (int i = 0; i < Constants.COLS; i++) {
-            matrix[6][i] = new Pawn(com.kamenov.martin.chess.Color.White, 6, i, context);
-            matrix[1][i] = new Pawn(com.kamenov.martin.chess.Color.Black, 1, i, context);
+            matrix[6][i] = new Pawn(PlayerColor.White, 6, i, context);
+            matrix[1][i] = new Pawn(PlayerColor.Black, 1, i, context);
         }
     }
 
@@ -97,7 +95,7 @@ public class Board implements GameObject {
         if (selectedPiece != null) {
             placesToMove = selectedPiece.canMove(matrix);
         }
-        if(playerTurn%2==1) {
+        if(playerTurn == PlayerColor.White) {
             for (int i = 0; i < 8; i++) {
                 for (int j = 0; j < 8; j++) {
                     if ((i + j) % 2 == 1) {
@@ -142,7 +140,7 @@ public class Board implements GameObject {
         if(selectedPiece!=null) {
             int selectedRow = selectedPiece.getRow();
             int selectedCol = selectedPiece.getCol();
-            if(playerTurn%2 == 1) {
+            if(playerTurn == PlayerColor.White) {
                 canvas.drawRect(selectedCol * cellWidth, selectedRow * cellWidth, (selectedCol * cellWidth) + cellWidth,
                         (selectedRow * cellWidth) + cellWidth, turquoisePaint);
             } else {
@@ -167,7 +165,7 @@ public class Board implements GameObject {
     }
 
     public void selectPlace(int row, int col) {
-        if(playerTurn%2==0) {
+        if(playerTurn == PlayerColor.Black) {
             row = 7 - row;
             col = 7 - col;
         }
@@ -175,20 +173,20 @@ public class Board implements GameObject {
                 row < 0 || col < 0) {
             return;
         } else if (!pieceIsSelected && matrix[row][col] != null) {
-            com.kamenov.martin.chess.Color playerColor = null;
-            if(playerTurn%2==1) {
-                playerColor = com.kamenov.martin.chess.Color.White;
+            PlayerColor playerPlayerColor = null;
+            if(playerTurn == PlayerColor.White) {
+                playerPlayerColor = PlayerColor.White;
             } else {
-                playerColor = com.kamenov.martin.chess.Color.Black;
+                playerPlayerColor = PlayerColor.Black;
             }
             selectedPiece = matrix[row][col];
             pieceIsSelected = true;
-            if(selectedPiece.getColor()!=playerColor) {
+            if(selectedPiece.getPlayerColor()!= playerPlayerColor) {
                 selectedPiece = null;
                 pieceIsSelected = false;
             }
         } else if(pieceIsSelected) {
-            if(matrix[row][col]!=null&&matrix[row][col].getColor()==selectedPiece.getColor()) {
+            if(matrix[row][col]!=null&&matrix[row][col].getPlayerColor()==selectedPiece.getPlayerColor()) {
                 selectedPiece = matrix[row][col];
             }
             else if(selectedPiece.canMove(getMatrix())[row][col]) {
@@ -200,7 +198,7 @@ public class Board implements GameObject {
 
                 selectedPiece.move(row, col);
                 boolean hasMoved = true;
-                if(playerTurn%2==1) {
+                if(playerTurn == PlayerColor.White) {
                     if(checkForBlackChess()) {
                         selectedPiece.move(currentRow, currentCol);
                         if(pieceInPlace!=null) {
@@ -220,7 +218,7 @@ public class Board implements GameObject {
                     }
                 }
 
-                if(playerTurn%2==1) {
+                if(playerTurn == PlayerColor.White) {
                     if(checkForWhiteChess()) {
                         blackIsInCheck = true;
                         Toast.makeText(context, "Black is in chess", Toast.LENGTH_SHORT).show();
@@ -236,7 +234,7 @@ public class Board implements GameObject {
                     blackIsInCheck = false;
                     selectedPiece = null;
                     pieceIsSelected = false;
-                    playerTurn++;
+                    changeTurn();
                 }
 
             }
@@ -254,7 +252,7 @@ public class Board implements GameObject {
             for (int j = 0; j < 7; j++) {
                 if(matrix[i][j] != null) {
                     Piece piece = matrix[i][j];
-                    if(piece.getColor() == com.kamenov.martin.chess.Color.White) {
+                    if(piece.getPlayerColor() == PlayerColor.White) {
                         boolean[][] placesPieceCanMove = piece.canMove(matrix);
                         if(placesPieceCanMove[blackKing.getRow()][blackKing.getCol()]) {
                             return true;
@@ -272,7 +270,7 @@ public class Board implements GameObject {
             for (int j = 0; j < 7; j++) {
                 if(matrix[i][j] != null) {
                     Piece piece = matrix[i][j];
-                    if(piece.getColor() == com.kamenov.martin.chess.Color.Black) {
+                    if(piece.getPlayerColor() == PlayerColor.Black) {
                         boolean[][] placesPieceCanMove = piece.canMove(matrix);
                         if(placesPieceCanMove[whiteKing.getRow()][whiteKing.getCol()]) {
                             return true;
@@ -285,5 +283,11 @@ public class Board implements GameObject {
         return false;
     }
 
-
+    private void changeTurn() {
+        if(playerTurn == PlayerColor.White) {
+            playerTurn = PlayerColor.Black;
+        } else {
+            playerTurn = PlayerColor.White;
+        }
+    }
 }

@@ -1,8 +1,11 @@
-package com.kamenov.martin.chess;
+package com.kamenov.martin.chess.android;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+
+import com.kamenov.martin.chess.game.Constants;
+import com.kamenov.martin.chess.game.GamePanel;
 
 public class GameActivity extends AppCompatActivity {
 
