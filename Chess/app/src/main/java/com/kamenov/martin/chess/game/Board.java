@@ -165,7 +165,7 @@ public class Board implements GameObject {
     }
 
     public void selectPlace(int row, int col) {
-        if(playerTurn == PlayerColor.White) {
+        if(playerTurn == PlayerColor.Black) {
             row = 7 - row;
             col = 7 - col;
         }

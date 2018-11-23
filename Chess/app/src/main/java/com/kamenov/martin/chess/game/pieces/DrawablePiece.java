@@ -75,7 +75,7 @@ public abstract class DrawablePiece implements Piece {
 
     private int getResourceFigure() {
         if(clazz == Bishop.class && playerColor == PlayerColor.White) {
-            return R.drawable.whiterook;
+            return R.drawable.whitebishop;
         } else if(clazz == King.class && playerColor == PlayerColor.White) {
             return R.drawable.whiteking;
         } else if(clazz == Knight.class && playerColor == PlayerColor.White) {
