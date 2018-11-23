@@ -15,22 +15,9 @@ import com.kamenov.martin.chess.R;
  */
 
 public class Knight extends DrawablePiece {
-    private PlayerColor playerColor;
-    private int row;
-    private int col;
 
     public Knight(PlayerColor playerColor, int row, int col, Context context) {
-        super(context);
-        setPlayerColor(playerColor);
-        setRow(row);
-        setCol(col);
-    }
-    public PlayerColor getPlayerColor() {
-        return playerColor;
-    }
-
-    public void setPlayerColor(PlayerColor playerColor) {
-        this.playerColor = playerColor;
+        super(playerColor, row, col, context);
     }
 
     @Override

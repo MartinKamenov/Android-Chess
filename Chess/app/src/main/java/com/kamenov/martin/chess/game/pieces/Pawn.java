@@ -15,24 +15,11 @@ import com.kamenov.martin.chess.R;
  */
 
 public class Pawn extends DrawablePiece {
-    private PlayerColor playerColor;
-    private int row;
-    private int col;
     private boolean hasMoved;
 
     public Pawn(PlayerColor playerColor, int row, int col, Context context) {
-        super(context);
-        setPlayerColor(playerColor);
-        setRow(row);
-        setCol(col);
+        super(playerColor, row, col, context);
         hasMoved = false;
-    }
-    public PlayerColor getPlayerColor() {
-        return playerColor;
-    }
-
-    public void setPlayerColor(PlayerColor playerColor) {
-        this.playerColor = playerColor;
     }
 
     @Override
@@ -82,30 +69,5 @@ public class Pawn extends DrawablePiece {
         }
 
         return result;
-    }
-
-    @Override
-    public void move(int row, int col) {
-        hasMoved = true;
-        setRow(row);
-        setCol(col);
-    }
-
-    @Override
-    public int getRow() {
-        return row;
-    }
-
-    @Override
-    public int getCol() {
-        return col;
-    }
-
-    public void setRow(int row) {
-        this.row = row;
-    }
-
-    public void setCol(int col) {
-        this.col = col;
     }
 }

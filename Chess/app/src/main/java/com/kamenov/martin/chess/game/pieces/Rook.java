@@ -15,24 +15,9 @@ import com.kamenov.martin.chess.R;
  */
 
 public class Rook extends DrawablePiece {
-    private PlayerColor playerColor;
-    private int row;
-    private int col;
-    private Context context;
 
     public Rook(PlayerColor playerColor, int row, int col, Context context) {
-        super(context);
-        setPlayerColor(playerColor);
-        setRow(row);
-        setCol(col);
-        this.context = context;
-    }
-    public PlayerColor getPlayerColor() {
-        return playerColor;
-    }
-
-    public void setPlayerColor(PlayerColor playerColor) {
-        this.playerColor = playerColor;
+        super(playerColor, row, col, context);
     }
 
     @Override
@@ -88,29 +73,5 @@ public class Rook extends DrawablePiece {
         }
 
         return result;
-    }
-
-    @Override
-    public void move(int row, int col) {
-        setRow(row);
-        setCol(col);
-    }
-
-    @Override
-    public int getRow() {
-        return row;
-    }
-
-    @Override
-    public int getCol() {
-        return col;
-    }
-
-    public void setRow(int row) {
-        this.row = row;
-    }
-
-    public void setCol(int col) {
-        this.col = col;
     }
 }

@@ -15,23 +15,9 @@ import com.kamenov.martin.chess.R;
  */
 
 public class Queen extends DrawablePiece {
-    private PlayerColor playerColor;
-    private int row;
-    private int col;
 
     public Queen(PlayerColor playerColor, int row, int col, Context context) {
-        super(context);
-        setPlayerColor(playerColor);
-        setRow(row);
-        setCol(col);
-    }
-
-    public PlayerColor getPlayerColor() {
-        return playerColor;
-    }
-
-    public void setPlayerColor(PlayerColor playerColor) {
-        this.playerColor = playerColor;
+        super(playerColor, row, col, context);
     }
 
     @Override
@@ -158,27 +144,5 @@ public class Queen extends DrawablePiece {
         }
 
         return result;
-    }
-
-    @Override
-    public void move(int row, int col) {
-        setRow(row);
-        setCol(col);
-    }
-
-    public int getRow() {
-        return row;
-    }
-
-    public void setRow(int row) {
-        this.row = row;
-    }
-
-    public int getCol() {
-        return col;
-    }
-
-    public void setCol(int col) {
-        this.col = col;
     }
 }

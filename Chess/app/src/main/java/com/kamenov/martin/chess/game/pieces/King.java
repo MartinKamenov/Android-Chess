@@ -15,22 +15,11 @@ import com.kamenov.martin.chess.R;
  */
 
 public class King extends DrawablePiece {
-    private PlayerColor playerColor;
     private boolean hasMoved;
 
     public King(PlayerColor playerColor, int row, int col, Context context) {
         super(playerColor, row, col, context);
-        setPlayerColor(playerColor);
-        setRow(row);
-        setCol(col);
         hasMoved = false;
-    }
-    public PlayerColor getPlayerColor() {
-        return playerColor;
-    }
-
-    public void setPlayerColor(PlayerColor playerColor) {
-        this.playerColor = playerColor;
     }
 
     @Override
@@ -63,29 +52,5 @@ public class King extends DrawablePiece {
             return false;
         }
         return true;
-    }
-
-    @Override
-    public void move(int row, int col) {
-        setRow(row);
-        setCol(col);
-    }
-
-    @Override
-    public int getRow() {
-        return row;
-    }
-
-    @Override
-    public int getCol() {
-        return col;
-    }
-
-    public void setRow(int row) {
-        this.row = row;
-    }
-
-    public void setCol(int col) {
-        this.col = col;
     }
 }
