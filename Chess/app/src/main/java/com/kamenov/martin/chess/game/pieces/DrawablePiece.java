@@ -15,25 +15,22 @@ import com.kamenov.martin.chess.game.PlayerColor;
  */
 
 public abstract class DrawablePiece implements Piece {
-    private Context context;
-    private int row;
-    private int col;
+    protected int row;
+    protected int col;
     protected PlayerColor playerColor;
+    private Context context;
+    private Class clazz;
 
     protected DrawablePiece(PlayerColor playerColor, int row, int col, Context context) {
+        this.playerColor = playerColor;
+        this.row = row;
+        this.col = col;
         this.context = context;
-
+        clazz = this.getClass();
     }
 
     public void draw(Canvas canvas, PlayerColor playerTurn) {
-        Bitmap icon = null;
-        if(getPlayerColor()== PlayerColor.White) {
-            icon = BitmapFactory.decodeResource(context.getResources(),
-                    R.drawable.whiterook);
-        } else {
-            icon = BitmapFactory.decodeResource(context.getResources(),
-                    R.drawable.blackrook);
-        }
+        Bitmap icon = BitmapFactory.decodeResource(context.getResources(), getResourceFigure());
         Rect whiteRect = new Rect(getCol() * Constants.CELL_WIDTH, getRow() * Constants.CELL_WIDTH
                 , getCol() * Constants.CELL_WIDTH + Constants.CELL_WIDTH, getRow() * Constants.CELL_WIDTH + Constants.CELL_WIDTH);
 
@@ -45,6 +42,11 @@ public abstract class DrawablePiece implements Piece {
         } else {
             canvas.drawBitmap(icon, null, blackRect, null);
         }
+    }
+
+    @Override
+    public PlayerColor getPlayerColor() {
+        return playerColor;
     }
 
     @Override
@@ -69,5 +71,33 @@ public abstract class DrawablePiece implements Piece {
 
     public void setCol(int col) {
         this.col = col;
+    }
+
+    private int getResourceFigure() {
+        if(clazz == Bishop.class && playerColor == PlayerColor.White) {
+            return R.drawable.whiterook;
+        } else if(clazz == King.class && playerColor == PlayerColor.White) {
+            return R.drawable.whiteking;
+        } else if(clazz == Knight.class && playerColor == PlayerColor.White) {
+            return R.drawable.whiteknight;
+        } else if(clazz == Pawn.class && playerColor == PlayerColor.White) {
+            return R.drawable.whitepawn;
+        } else if(clazz == Queen.class && playerColor == PlayerColor.White) {
+            return R.drawable.whitequeen;
+        } else if(clazz == Rook.class && playerColor == PlayerColor.White) {
+            return R.drawable.whiterook;
+        } else if(clazz == Bishop.class) {
+            return R.drawable.blackbishop;
+        } else if(clazz == King.class) {
+            return R.drawable.blackking;
+        } else if(clazz == Knight.class) {
+            return R.drawable.blackknight;
+        } else if(clazz == Pawn.class) {
+            return R.drawable.blackpawn;
+        } else if(clazz == Queen.class) {
+            return R.drawable.blackqueen;
+        } else {
+            return R.drawable.blackrook;
+        }
     }
 }

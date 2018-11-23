@@ -13,8 +13,6 @@ public interface Piece {
 
     PlayerColor getPlayerColor();
 
-    void setPlayerColor(PlayerColor playerColor);
-
     boolean[][] canMove(Piece[][] board);
 
     void move(int row, int col);

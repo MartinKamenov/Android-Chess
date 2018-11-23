@@ -16,12 +16,10 @@ import com.kamenov.martin.chess.R;
 
 public class King extends DrawablePiece {
     private PlayerColor playerColor;
-    private int row;
-    private int col;
     private boolean hasMoved;
 
     public King(PlayerColor playerColor, int row, int col, Context context) {
-        super(context);
+        super(playerColor, row, col, context);
         setPlayerColor(playerColor);
         setRow(row);
         setCol(col);
