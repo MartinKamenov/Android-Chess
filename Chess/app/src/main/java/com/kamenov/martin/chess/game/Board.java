@@ -27,6 +27,7 @@ public class Board implements GameObject {
     private Piece blackKing;
     private boolean whiteIsInCheck;
     private boolean blackIsInCheck;
+    private boolean hasMoved;
     private Context context;
 
     public Board(Context context, GamePanel gamePanel) {
@@ -173,17 +174,19 @@ public class Board implements GameObject {
                 row < 0 || col < 0) {
             return;
         } else if (!pieceIsSelected && matrix[row][col] != null) {
-            PlayerColor playerPlayerColor = null;
+            PlayerColor playerPlayerColor;
             if(playerTurn == PlayerColor.White) {
                 playerPlayerColor = PlayerColor.White;
             } else {
                 playerPlayerColor = PlayerColor.Black;
             }
+
             selectedPiece = matrix[row][col];
             pieceIsSelected = true;
-            if(selectedPiece.getPlayerColor()!= playerPlayerColor) {
+            if(hasMoved) {
                 selectedPiece = null;
                 pieceIsSelected = false;
+                hasMoved = false;
             }
         } else if(pieceIsSelected) {
             if(matrix[row][col]!=null&&matrix[row][col].getPlayerColor()==selectedPiece.getPlayerColor()) {
@@ -197,7 +200,7 @@ public class Board implements GameObject {
                 matrix[selectedPiece.getRow()][selectedPiece.getCol()] = null;
 
                 selectedPiece.move(row, col);
-                boolean hasMoved = true;
+                hasMoved = true;
                 if(playerTurn == PlayerColor.White) {
                     if(checkForBlackChess()) {
                         selectedPiece.move(currentRow, currentCol);
@@ -218,6 +221,7 @@ public class Board implements GameObject {
                     }
                 }
 
+                // Check for chess
                 if(playerTurn == PlayerColor.White) {
                     if(checkForWhiteChess()) {
                         blackIsInCheck = true;
