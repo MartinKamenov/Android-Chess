@@ -70,4 +70,10 @@ public class Pawn extends DrawablePiece {
 
         return result;
     }
+
+    @Override
+    public void move(int row, int col) {
+        super.move(row, col);
+        hasMoved = true;
+    }
 }
