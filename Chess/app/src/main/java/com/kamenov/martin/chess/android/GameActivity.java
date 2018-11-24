@@ -55,7 +55,7 @@ public class GameActivity extends Activity implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         if(view.getId() == Constants.UNDO_BTN_ID) {
-            this.gamePanel.redo();
+            this.gamePanel.undo();
         }
     }
 }

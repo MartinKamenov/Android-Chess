@@ -46,8 +46,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback  {
         return false;
     }
 
-    public void redo() {
-        this.board.reduMove();
+    public void undo() {
+        this.board.undoMove();
     }
 
     @Override

@@ -30,42 +30,18 @@ public class Board implements GameObject {
     private boolean blackIsInCheck;
     private boolean hasMoved;
     private Context context;
+    private MovementService movementService;
 
     public Board(Context context, GamePanel gamePanel) {
         this.context = context;
         this.gamePanel = gamePanel;
         matrix = new Piece[8][8];
+        movementService = MovementService.getInstance();
         playerTurn = PlayerColor.White;
         pieceIsSelected = false;
         selectedPiece = null;
-
-        matrix[7][0] = new Rook(PlayerColor.White, 7, 0, context);
-        matrix[7][7] = new Rook(PlayerColor.White, 7, 7, context);
-        matrix[0][0] = new Rook(PlayerColor.Black, 0, 0, context);
-        matrix[0][7] = new Rook(PlayerColor.Black, 0, 7, context);
-
-        matrix[7][1] = new Knight(PlayerColor.White, 7, 1, context);
-        matrix[7][6] = new Knight(PlayerColor.White, 7, 6, context);
-        matrix[0][1] = new Knight(PlayerColor.Black, 0, 1, context);
-        matrix[0][6] = new Knight(PlayerColor.Black, 0, 6, context);
-
-        matrix[7][2] = new Bishop(PlayerColor.White, 7, 2, context);
-        matrix[7][5] = new Bishop(PlayerColor.White, 7, 5, context);
-        matrix[0][2] = new Bishop(PlayerColor.Black, 0, 2, context);
-        matrix[0][5] = new Bishop(PlayerColor.Black, 0, 5, context);
-
-        matrix[7][3] = new Queen(PlayerColor.White, 7, 3, context);
-        matrix[0][3] = new Queen(PlayerColor.Black, 0, 3, context);
-
-        whiteKing = new King(PlayerColor.White, 7, 4, context);
-        blackKing = new King(PlayerColor.Black, 0, 4, context);
-        matrix[7][4] = whiteKing;
-        matrix[0][4] = blackKing;
-
-        for (int i = 0; i < Constants.COLS; i++) {
-            matrix[6][i] = new Pawn(PlayerColor.White, 6, i, context);
-            matrix[1][i] = new Pawn(PlayerColor.Black, 1, i, context);
-        }
+        fillMatrix(matrix);
+        this.gamePanel.draw();
     }
 
     @Override
@@ -162,8 +138,19 @@ public class Board implements GameObject {
 
     }
 
-    public void reduMove() {
+    public void undoMove() {
+        Move lastMove = movementService.popLastMove();
+        if(lastMove == null) {
+            return;
+        }
 
+        Piece piece = lastMove.getPiece();
+        if(piece == null) {
+            return;
+        }
+
+        piece.move(lastMove.getPreviousRow(), lastMove.getPreviousCol());
+        changeTurn();
     }
 
     public Piece[][] getMatrix() {
@@ -179,13 +166,6 @@ public class Board implements GameObject {
                 row < 0 || col < 0) {
             return;
         } else if (!pieceIsSelected && matrix[row][col] != null) {
-            PlayerColor playerPlayerColor;
-            if(playerTurn == PlayerColor.White) {
-                playerPlayerColor = PlayerColor.White;
-            } else {
-                playerPlayerColor = PlayerColor.Black;
-            }
-
             selectedPiece = matrix[row][col];
             pieceIsSelected = true;
             if(hasMoved) {
@@ -239,6 +219,12 @@ public class Board implements GameObject {
                     }
                 }
                 if(hasMoved) {
+                    movementService.addMove(
+                            selectedPiece,
+                            selectedPiece.getRow(),
+                            selectedPiece.getCol(),
+                            currentRow,
+                            currentCol);
                     whiteIsInCheck = false;
                     blackIsInCheck = false;
                     selectedPiece = null;
@@ -250,10 +236,6 @@ public class Board implements GameObject {
         }
 
         this.gamePanel.draw();
-    }
-
-    public void getMatrix(Piece[][] matrix) {
-        this.matrix = matrix;
     }
 
     private boolean checkForWhiteChess() {
@@ -297,6 +279,36 @@ public class Board implements GameObject {
             playerTurn = PlayerColor.Black;
         } else {
             playerTurn = PlayerColor.White;
+        }
+    }
+
+    private void fillMatrix(Piece[][] matrix) {
+        matrix[7][0] = new Rook(PlayerColor.White, 7, 0, context);
+        matrix[7][7] = new Rook(PlayerColor.White, 7, 7, context);
+        matrix[0][0] = new Rook(PlayerColor.Black, 0, 0, context);
+        matrix[0][7] = new Rook(PlayerColor.Black, 0, 7, context);
+
+        matrix[7][1] = new Knight(PlayerColor.White, 7, 1, context);
+        matrix[7][6] = new Knight(PlayerColor.White, 7, 6, context);
+        matrix[0][1] = new Knight(PlayerColor.Black, 0, 1, context);
+        matrix[0][6] = new Knight(PlayerColor.Black, 0, 6, context);
+
+        matrix[7][2] = new Bishop(PlayerColor.White, 7, 2, context);
+        matrix[7][5] = new Bishop(PlayerColor.White, 7, 5, context);
+        matrix[0][2] = new Bishop(PlayerColor.Black, 0, 2, context);
+        matrix[0][5] = new Bishop(PlayerColor.Black, 0, 5, context);
+
+        matrix[7][3] = new Queen(PlayerColor.White, 7, 3, context);
+        matrix[0][3] = new Queen(PlayerColor.Black, 0, 3, context);
+
+        whiteKing = new King(PlayerColor.White, 7, 4, context);
+        blackKing = new King(PlayerColor.Black, 0, 4, context);
+        matrix[7][4] = whiteKing;
+        matrix[0][4] = blackKing;
+
+        for (int i = 0; i < Constants.COLS; i++) {
+            matrix[6][i] = new Pawn(PlayerColor.White, 6, i, context);
+            matrix[1][i] = new Pawn(PlayerColor.Black, 1, i, context);
         }
     }
 }
