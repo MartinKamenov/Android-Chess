@@ -162,6 +162,10 @@ public class Board implements GameObject {
 
     }
 
+    public void reduMove() {
+
+    }
+
     public Piece[][] getMatrix() {
         return matrix;
     }
